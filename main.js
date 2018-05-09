@@ -141,18 +141,20 @@ var garbageLayer = new ol.layer.Vector({
   style: styleGarbage
 });
 
+var appView = new ol.View({
+  center: ol.proj.fromLonLat([120.301507, 23.124694]),
+  zoom: 16
+});
+
 var map = new ol.Map({
-  layers: [baseLayer, cunliLayer, busLayer, garbageLayer],
+  layers: [baseLayer, cunliLayer],
   target: 'map',
   controls: ol.control.defaults({
     attributionOptions: {
       collapsible: false
     }
   }),
-  view: new ol.View({
-    center: ol.proj.fromLonLat([120.301507, 23.124694]),
-    zoom: 16
-  })
+  view: appView
 });
 map.addControl(sidebar);
 
@@ -204,3 +206,60 @@ exportButton.addEventListener('click', function() {
   });
   map.renderSync();
 }, false);
+
+var geolocation = new ol.Geolocation({
+  projection: appView.getProjection()
+});
+
+geolocation.setTracking(true);
+
+geolocation.on('error', function(error) {
+  console.log(error.message);
+});
+
+var positionFeature = new ol.Feature();
+
+positionFeature.setStyle(new ol.style.Style({
+  image: new ol.style.Circle({
+    radius: 6,
+    fill: new ol.style.Fill({
+      color: '#3399CC'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#fff',
+      width: 2
+    })
+  })
+}));
+
+var changeTriggered = false;
+var currentCoordinates;
+geolocation.on('change:position', function() {
+  currentCoordinates = geolocation.getPosition();
+  if(false === changeTriggered) {
+    var mapView = map.getView();
+    mapView.setCenter(currentCoordinates);
+    mapView.setZoom(17);
+    changeTriggered = true;
+
+
+    setTimeout(function() {
+      map.forEachFeatureAtPixel(map.getPixelFromCoordinate(currentCoordinates), function (feature, layer) {
+        var fid = feature.getId();
+        if(fid) {
+          var p = feature.getProperties();
+          $('select#town').val(p.TOWNNAME).trigger('change');
+          $('select#cunli').val(p.VILLCODE);
+        }
+      });
+    }, 300);
+  }
+  positionFeature.setGeometry(currentCoordinates ? new ol.geom.Point(currentCoordinates) : null);
+});
+
+new ol.layer.Vector({
+  map: map,
+  source: new ol.source.Vector({
+    features: [positionFeature]
+  })
+});
