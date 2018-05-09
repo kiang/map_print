@@ -69,7 +69,7 @@ var baseLayer = new ol.layer.Tile({
 var cunliLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
     url: 'cunli.json',
-    format: new ol.format.TopoJSON()
+    format: new ol.format.GeoJSON()
   }),
   style: function(f) {
     var l = layerYellow.clone();
