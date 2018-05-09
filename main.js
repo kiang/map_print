@@ -193,6 +193,9 @@ map.on('singleclick', function(evt) {
   });
 });
 
+var imgQrcode = loadImage('img/qrcode.png');
+var imgBottom = loadImage('img/bottom.png');
+
 exportButton.addEventListener('click', function() {
 
   exportButton.disabled = true;
@@ -200,6 +203,9 @@ exportButton.addEventListener('click', function() {
 
   map.once('postcompose', function(event) {
     var canvas = event.context.canvas;
+    var ctx = canvas.getContext("2d");
+    ctx.drawImage(imgQrcode, 0, 0);
+    ctx.drawImage(imgBottom, 0, 1704);
     var data = canvas.toDataURL('image/png');
     var pdf = new jsPDF('landscape', undefined, 'a3');
     pdf.addImage(data, 'PNG', 0, 0, 420, 297);
@@ -275,3 +281,9 @@ $('input#checkBus').change(function() {
 $('input#checkGarbage').change(function() {
   garbageLayer.setVisible($(this).is(':checked'))
 });
+
+function loadImage(src) {
+    var img = new Image();
+    img.src = src;
+    return img;
+}
