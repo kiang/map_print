@@ -1,3 +1,4 @@
+var sidebar = new ol.control.Sidebar({ element: 'sidebar', position: 'right' });
 var projection = ol.proj.get('EPSG:3857');
 var projectionExtent = projection.getExtent();
 var size = ol.extent.getWidth(projectionExtent) / 256;
@@ -11,16 +12,28 @@ for (var z = 0; z < 20; ++z) {
 }
 
 var styleBus = new ol.style.Style({
-  image: new ol.style.Icon({
-    src: 'icons/bus-1.png',
-    crossOrigin: 'anonymous'
+  image: new ol.style.Circle({
+    radius: 10,
+    fill: new ol.style.Fill({
+      color: '#0000CC'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#fff',
+      width: 2
+    })
   })
 });
 
 var styleGarbage = new ol.style.Style({
-  image: new ol.style.Icon({
-    src: 'icons/garbage-truck.png',
-    crossOrigin: 'anonymous'
+  image: new ol.style.Circle({
+    radius: 10,
+    fill: new ol.style.Fill({
+      color: '#00CC00'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#fff',
+      width: 2
+    })
   }),
   text: new ol.style.Text({
     font: 'bold 16px "Open Sans", "Arial Unicode MS", "sans-serif"',
@@ -35,9 +48,6 @@ var layerYellow = new ol.style.Style({
   stroke: new ol.style.Stroke({
       color: 'rgba(0,0,0,1)',
       width: 1
-  }),
-  fill: new ol.style.Fill({
-      color: 'rgba(255,255,0,0.3)'
   }),
   text: new ol.style.Text({
     font: 'bold 16px "Open Sans", "Arial Unicode MS", "sans-serif"',
@@ -66,17 +76,54 @@ var baseLayer = new ol.layer.Tile({
     opacity: 0.5
 });
 
+var cunliSource = new ol.source.Vector({
+  url: 'cunli.json',
+  format: new ol.format.GeoJSON()
+});
 var cunliLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    url: 'cunli.json',
-    format: new ol.format.GeoJSON()
-  }),
+  source: cunliSource,
   style: function(f) {
     var l = layerYellow.clone();
     l.getText().setText(f.get('TOWNNAME') + f.get('VILLNAME'));
     return l;
   }
 });
+
+var cunliList = {};
+cunliSource.once('change', function() {
+  if(cunliSource.getState() === 'ready') {
+    cunliSource.forEachFeature(function(f) {
+      var p = f.getProperties();
+      f.setId(p.VILLCODE);
+      if(!cunliList[p.TOWNNAME]) {
+        cunliList[p.TOWNNAME] = {};
+      }
+      cunliList[p.TOWNNAME][p.VILLCODE] = p.VILLNAME;
+    });
+    var townOptions = '<option>---</option>';
+    for(k in cunliList) {
+      townOptions += '<option value="' + k + '">' + k + '</option>';
+    }
+    $('select#town').html(townOptions);
+    $('select#town').change(function() {
+      var cunliOptions = '<option>---</option>';
+      var selectedTown = $(this).val();
+      if(cunliList[selectedTown]) {
+        for(k in cunliList[selectedTown]) {
+          cunliOptions += '<option value="' + k + '">' + cunliList[selectedTown][k] + '</option>';
+        }
+      }
+      $('select#cunli').html(cunliOptions);
+    });
+    $('select#cunli').change(function() {
+      var selectedCunli = $(this).val();
+      var f = cunliSource.getFeatureById(selectedCunli);
+      if(f) {
+        map.getView().fit(f.getGeometry().getExtent());
+      }
+    });
+  }
+})
 
 var busLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
@@ -107,6 +154,7 @@ var map = new ol.Map({
     zoom: 16
   })
 });
+map.addControl(sidebar);
 
 var dims = {
   a0: [1189, 841],
@@ -122,18 +170,20 @@ var loaded = 0;
 
 var exportButton = document.getElementById('export-pdf');
 
-// var width = 4967; // 841 * 150 / 25.4
-// var height = 3508; // 594 * 150 / 25.4
-var width = 1754; // 297 * 150 / 25.4
-var height = 1240; // 210 * 150 / 25.4
+//a3
+var width = 2480; // 420 * 150 / 25.4
+var height = 1754; // 297 * 150 / 25.4
+
+//a4
+// var width = 1754; // 297 * 150 / 25.4
+// var height = 1240; // 210 * 150 / 25.4
 
 map.setSize([width, height]);
 map.renderSync();
 
 map.on('singleclick', function(evt) {
   map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
-      var p = feature.getProperties();
-      console.log(p);
+      //var p = feature.getProperties();
   });
 });
 

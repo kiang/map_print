@@ -3,30 +3,80 @@
   <head>
     <meta charset="utf-8">
     <title>Export PDF example</title>
-    <link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.4/ol.css" type="text/css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/ol3-sidebar.css" />
     <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
-    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
-    <script src="https://openlayers.org/en/v4.6.5/build/ol.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
     <style>
     body {
       padding: 0;
       margin: 0;
       overflow: hidden;
     }
-    html, body, #map {
+    html, body {
       height: 100%;
       font: 10pt "Helvetica Neue", Arial, Helvetica, sans-serif;
+    }
+    #map {
+      width: 1240px;
+      height: 877px;
     }
     </style>
   </head>
   <body>
-    <button id="export-pdf">Export PDF</button>
-    <div class="row-fluid">
-      <div class="span12">
-        <div id="map" class="map"></div>
-      </div>
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+  // var js, fjs = d.getElementsByTagName(s)[0];
+  // if (d.getElementById(id)) return;
+  // js = d.createElement(s); js.id = id;
+  // js.src = 'https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v2.12&appId=1393405437614114&autoLogAppEvents=1';
+  // fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+    <div id="sidebar" class="sidebar collapsed">
+        <!-- Nav tabs -->
+        <div class="sidebar-tabs">
+            <ul role="tablist">
+                <li><a href="#home" role="tab"><i class="fa fa-bars"></i></a></li>
+                <li><a href="#fb" role="tab"><i class="fa fa-facebook"></i></a></li>
+                <li><a href="https://github.com/kiang/map_print" role="tab" target="_blank"><i class="fa fa-github"></i></a></li>
+            </ul>
+        </div>
+
+        <!-- Tab panes -->
+        <div class="sidebar-content">
+            <div class="sidebar-pane" id="home">
+                <h1 class="sidebar-header">
+                    國土巡守隊
+                    <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
+                </h1>
+                <p>
+                  <div class="form-row">
+                    <div class="form-group col-md-6">
+                      <label for="town">區域</label>
+                      <select id="town" class="form-control"></select>
+                    </div>
+                    <div class="form-group col-md-6">
+                      <label for="cunli">村里</label>
+                      <select id="cunli" class="form-control"></select>
+                    </div>
+                  </div>
+                  <button id="export-pdf" class="btn btn-primary col-md-12">列印地圖</button>
+                </p>
+            </div>
+            <div class="sidebar-pane" id="fb">
+              <div class="fb-page" data-href="https://www.facebook.com/k.olc.tw/" data-tabs="timeline" data-width="380" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/k.olc.tw/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/k.olc.tw/">江明宗</a></blockquote></div>
+            </div>
+        </div>
     </div>
+    <div id="map" class="map"></div>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.4/ol.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js"></script>
+    <script src="js/ol3-sidebar.js"></script>
     <script src="main.js"></script>
   </body>
 </html>
