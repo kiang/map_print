@@ -47,22 +47,29 @@
         <div class="sidebar-content">
             <div class="sidebar-pane" id="home">
                 <h1 class="sidebar-header">
-                    國土巡守隊
+                    台南村里地圖產生器
                     <span class="sidebar-close"><i class="fa fa-caret-left"></i></span>
                 </h1>
-                <p>
-                  <div class="form-row">
-                    <div class="form-group col-md-6">
-                      <label for="town">區域</label>
-                      <select id="town" class="form-control"></select>
-                    </div>
-                    <div class="form-group col-md-6">
-                      <label for="cunli">村里</label>
-                      <select id="cunli" class="form-control"></select>
-                    </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="town">區域</label>
+                    <select id="town" class="form-control"></select>
                   </div>
-                  <button id="export-pdf" class="btn btn-primary col-md-12">列印地圖</button>
-                </p>
+                  <div class="form-group col-md-6">
+                    <label for="cunli">村里</label>
+                    <select id="cunli" class="form-control"></select>
+                  </div>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="1" id="checkBus">
+                  <label class="form-check-label" for="checkBus">公車站牌</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="1" id="checkGarbage">
+                  <label class="form-check-label" for="checkGarbage">垃圾清運點</label>
+                </div>
+                <hr />
+                <button id="export-pdf" class="btn btn-primary col-md-12">列印地圖</button>
             </div>
             <div class="sidebar-pane" id="fb">
               <div class="fb-page" data-href="https://www.facebook.com/k.olc.tw/" data-tabs="timeline" data-width="380" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/k.olc.tw/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/k.olc.tw/">江明宗</a></blockquote></div>

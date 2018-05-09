@@ -126,6 +126,7 @@ cunliSource.once('change', function() {
 })
 
 var busLayer = new ol.layer.Vector({
+  id: 'busLayer',
   source: new ol.source.Vector({
     url: 'bus.json',
     format: new ol.format.GeoJSON()
@@ -141,13 +142,16 @@ var garbageLayer = new ol.layer.Vector({
   style: styleGarbage
 });
 
+busLayer.setVisible(false);
+garbageLayer.setVisible(false);
+
 var appView = new ol.View({
   center: ol.proj.fromLonLat([120.301507, 23.124694]),
   zoom: 16
 });
 
 var map = new ol.Map({
-  layers: [baseLayer, cunliLayer],
+  layers: [baseLayer, cunliLayer, busLayer, garbageLayer],
   target: 'map',
   controls: ol.control.defaults({
     attributionOptions: {
@@ -262,4 +266,12 @@ new ol.layer.Vector({
   source: new ol.source.Vector({
     features: [positionFeature]
   })
+});
+
+$('input#checkBus').change(function() {
+  busLayer.setVisible($(this).is(':checked'))
+});
+
+$('input#checkGarbage').change(function() {
+  garbageLayer.setVisible($(this).is(':checked'))
 });
